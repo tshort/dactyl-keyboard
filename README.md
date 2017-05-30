@@ -59,7 +59,7 @@ If printed at Shapeways or other professional shops, I would not expect such pro
 
 ### Thingiverse
 
-[The 4x5 STL left/right pair](https://www.thingiverse.com/thing:2349390) from the [things/](things/) directory is in the thingiverse here for public printing
+[The 4x5 STL left/right pair](https://www.thingiverse.com/thing:2349390) from the [things/](things/) directory is in the thingiverse for public printing
 
 ### Wiring
 
