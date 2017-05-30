@@ -57,6 +57,9 @@ On one print, the RJ-9 holder was squished, so I had to cut down my connector to
 
 If printed at Shapeways or other professional shops, I would not expect such problems. 
 
+### Thingaverse
+[The 4x5 STL left/right pair from this repos things directory is in the thingaverse here for public printing](https://www.thingiverse.com/thing:2349390)
+
 ### Wiring
 
 Here are materials I used for wiring.
