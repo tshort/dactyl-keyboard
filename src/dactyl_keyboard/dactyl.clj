@@ -757,6 +757,7 @@
       (write-scad
          (difference usb-holder usb-holder-hole)))
 
-
+(spit "things/switch-hole.scad"
+      (write-scad single-plate))
 
 (defn -main [dum] 1)  ; dummy to make it easier to batch
