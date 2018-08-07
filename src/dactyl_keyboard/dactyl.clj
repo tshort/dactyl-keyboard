@@ -603,13 +603,8 @@
          (translate [(first usb-holder-position) (second usb-holder-position) (/ (+ (last usb-holder-size) usb-holder-thickness) 2)])))
 
 (def teensy-width 20)
-(def teensy-height 12)
-(def teensy-length 33)
-(def teensy2-length 53)
 (def teensy-pcb-thickness 2)
 (def teensy-holder-width  (+ 7 teensy-pcb-thickness))
-(def teensy-holder-height (+ 6 teensy-width))
-(def teensy-offset-height 5)
 (def teensy-holder-top-length 18)
 (def teensy-top-xy (key-position 0 (- centerrow 1) (wall-locate3 -1 0)))
 (def teensy-bot-xy (key-position 0 (+ centerrow 1) (wall-locate3 -1 0)))
@@ -732,12 +727,7 @@
                     teensy-holder
                     rj9-holder
                     usb-holder-hole
-                    ; usb-holder-hole
-                    ; ; teensy-holder-hole
                     ;             screw-insert-outers
-                    ;             teensy-screw-insert-holes
-                    ;             teensy-screw-insert-outers
-                    ;             usb-cutout
                     ;             rj9-space
                                 ; wire-posts
                   )))
