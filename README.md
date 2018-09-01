@@ -40,7 +40,7 @@ I built a 4x5 version (40% size) for myself. The default has a bit more tenting 
 **Tips**
 * [Some other ways to evaluate the clojure design file](http://stackoverflow.com/a/28213489)
 * [Example designing with clojure](http://adereth.github.io/blog/2014/04/09/3d-printing-with-clojure/)
-
+* The `plate-left.scad` and `plate-right.scad` should be used to generate a `DXF` file using OpenSCAD, which you can either edit in InkScape to laser-cut, or extrude to 3d print in your favorite CAD tool
 
 ### Printing
 Pregenerated STL files are available in the [things/](things/) directory. 
