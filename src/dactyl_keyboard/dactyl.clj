@@ -742,16 +742,22 @@
                                 ; wire-posts
                   )))
 
+(def plate-right
+   (cut
+     (translate [0 0 -0.1]
+       (difference (union case-walls
+                          teensy-holder
+                          ; rj9-holder
+                          screw-insert-outers)
+                   (translate [0 0 -10] screw-insert-screw-holes))
+  ))
+)
+
 (spit "things/right-plate.scad"
-      (write-scad 
-                   (cut
-                     (translate [0 0 -0.1]
-                       (difference (union case-walls
-                                          teensy-holder
-                                          ; rj9-holder
-                                          screw-insert-outers)
-                                   (translate [0 0 -10] screw-insert-screw-holes))
-                  ))))
+      (write-scad plate-right))
+
+(spit "things/left-plate.scad"
+      (write-scad (mirror [-1 0 0] plate-right)))
 
 (spit "things/test.scad"
       (write-scad
