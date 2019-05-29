@@ -37,6 +37,17 @@ I built a 4x5 version (40% size) for myself. The default has a bit more tenting 
 * Make changes to design, repeat `load-file`, OpenSCAD will watch for changes and rerender.
 * When done, use OpenSCAD to export STL files
 
+**Generate the design (via Docker)*
+* Build the docker container: `docker build -t dactyl .`
+* Run 
+```
+docker run -it --rm \
+-v "$(pwd)/things:/usr/src/app/things" \
+-v "$(pwd)/src:/usr/src/app/src" \
+dactyl lein repl
+```
+* Load the file `(load-file "src/dactyl_keyboard/dactyl.clj")`
+
 **Tips**
 * [Some other ways to evaluate the clojure design file](http://stackoverflow.com/a/28213489)
 * [Example designing with clojure](http://adereth.github.io/blog/2014/04/09/3d-printing-with-clojure/)
