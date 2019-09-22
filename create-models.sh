@@ -5,7 +5,6 @@ cp things/right-plate.scad things/right-4x5-plate.scad
 openscad -o things/right-4x5-plate.dxf things/right-4x5-plate.scad >/dev/null 2>&1 &
 openscad -o things/right-4x5.stl things/right-4x5.scad >/dev/null 2>&1 &
 openscad -o things/left-4x5.stl  things/left-4x5.scad >/dev/null 2>&1 &
-openscad -o things/switch.stl  things/switch.scad >/dev/null 2>&1 &
 
 patch -p1 < 4x6.patch 
 lein run src/dactyl_keyboard/dactyl.clj
@@ -41,5 +40,4 @@ git checkout src/dactyl_keyboard/dactyl.clj
 # git add things/*-4x5.stl
 # git add things/right-4x5-plate.dxf
 # git commit -m "Add CAD files"
-cp things/* ../home/3D\ Objects/dactyl/
-# wait
+wait
