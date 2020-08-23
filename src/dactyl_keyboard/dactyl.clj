@@ -19,7 +19,7 @@
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π 36))                        ; curvature of the rows
 (def centerrow (- nrows 3))             ; controls front-back tilt
-(def centercol 2.5)                       ; controls left-right tilt / tenting (higher number is more tenting)
+(def centercol 2)                       ; controls left-right tilt / tenting (higher number is more tenting)
 (def tenting-angle (/ π 12))            ; or, change this for more precise tenting control
 (def column-style 
   (if (> nrows 5) :orthographic :standard))  ; options include :standard, :orthographic, and :fixed
@@ -295,20 +295,22 @@
 (def thumb-height-adjust 0)
 (defn thumb-tr-place [shape]
   (->> shape
-      ;  (rotate (deg2rad  10) [1 0 0])
-      ;  (rotate (deg2rad -23) [0 1 0])
-      ;  (rotate (deg2rad  -3) [0 0 1])
+
        (rotate (deg2rad  10) [1 0 0])
        (rotate (deg2rad -23) [0 1 0])
        (rotate (deg2rad  10) [0 0 1])
        (translate thumborigin)
-       (translate [-12 -16 (+ thumb-height-adjust 3)])
+       (translate [-12 -16 3])
+
+       ; (rotate (deg2rad  10) [1 0 0])
+       ; (rotate (deg2rad -36) [0 1 0])
+       ; (rotate (deg2rad  10) [0 0 1])
+       ; (translate thumborigin)
+       ; (translate [-12 -16 7.8])
+
        ))
 (defn thumb-tl-place [shape]
   (->> shape
-      ;  (rotate (deg2rad  10) [1 0 0])
-      ;  (rotate (deg2rad -23) [0 1 0])
-      ;  (rotate (deg2rad  -3) [0 0 1])
        (rotate (deg2rad  10) [1 0 0])
        (rotate (deg2rad -23) [0 1 0])
        (rotate (deg2rad  10) [0 0 1])
@@ -316,34 +318,61 @@
        (translate [-32 -15 (+ thumb-height-adjust -2)])))
 (defn thumb-mr-place [shape]
   (->> shape
+
        (rotate (deg2rad  -6) [1 0 0])
        (rotate (deg2rad -34) [0 1 0])
        (rotate (deg2rad  48) [0 0 1])
+
+       ; (rotate (deg2rad  10) [1 0 0])
+       ; (rotate (deg2rad -34) [0 1 0])
+       ; (rotate (deg2rad  20) [0 0 1])
+
        (translate thumborigin)
-       (translate [-29 -40 (+ thumb-height-adjust -13)])
+
+       (translate [-29 -40 -13])
+       ; (translate [-30 -39 -10])
        ))
 (defn thumb-ml-place [shape]
   (->> shape
-       (rotate (deg2rad   6) [1 0 0])
+       ; (rotate (deg2rad   10) [1 0 0])
+       ; (rotate (deg2rad -34) [0 1 0])
+       ; (rotate (deg2rad  40) [0 0 1])
+
+       (rotate (deg2rad  10) [1 0 0])
        (rotate (deg2rad -34) [0 1 0])
        (rotate (deg2rad  40) [0 0 1])
+
        (translate thumborigin)
-       (translate [-51 -25 (+ thumb-height-adjust -12)])))
+       ; (translate [-50 -16 (+ thumb-height-adjust -12)])))
+       (translate [-51 -25 -12])))
+       ; (translate [-51 -25 -12)])))
 (defn thumb-br-place [shape]
   (->> shape
-       (rotate (deg2rad -16) [1 0 0])
+       ; (rotate (deg2rad -16) [1 0 0])
+       (rotate (deg2rad 5) [1 0 0])
        (rotate (deg2rad -33) [0 1 0])
-       (rotate (deg2rad  54) [0 0 1])
+       (rotate (deg2rad  48) [0 0 1])
        (translate thumborigin)
-       (translate [-37.8 -55.3 (+ thumb-height-adjust -25.3)])
+       (translate [-41.8 -53.3 -23.3])
        ))
 (defn thumb-bl-place [shape]
   (->> shape
-       (rotate (deg2rad  -4) [1 0 0])
-       (rotate (deg2rad -35) [0 1 0])
-       (rotate (deg2rad  52) [0 0 1])
+
+       ; (rotate (deg2rad  8) [1 0 0])
+       ; (rotate (deg2rad 15) [0 1 0])
+       ; (rotate (deg2rad 46.5) [0 0 1])
+       ; (translate thumborigin)
+       ; (translate [-68 -50 -18])
+
+       ; (rotate (deg2rad  -4) [1 0 0])
+       ; (rotate (deg2rad -35) [0 1 0])
+       ; (rotate (deg2rad  52) [0 0 1])
+       (rotate (deg2rad  0) [1 0 0])
+       (rotate (deg2rad 6) [0 1 0])
+       (rotate (deg2rad 46.5) [0 0 1])
        (translate thumborigin)
-       (translate [-56.3 -43.3 (+ thumb-height-adjust -23.5)])
+       (translate [-69 -47 -18])
+
        ))
 
 (defn thumb-1x-layout [shape]
@@ -352,7 +381,8 @@
    (thumb-ml-place shape)
    (thumb-br-place shape)
    (thumb-tr-place shape)
-   (thumb-bl-place shape)))
+   (thumb-bl-place shape)
+   ))
 
 (defn thumb-15x-layout [shape]
   (union
@@ -438,6 +468,7 @@
              (thumb-mr-place web-post-tr)
              (thumb-tr-place web-post-bl)
              (thumb-mr-place web-post-br)
+             ; (thumb-tr-place web-post-br)) 
              (thumb-tr-place thumb-post-br)) 
       (triangle-hulls    ; top two to the main keyboard, starting on the left
              (thumb-tl-place thumb-post-tl)
@@ -451,6 +482,7 @@
              (key-place 2 lastrow web-post-bl)
              (thumb-tr-place web-post-tr)
              (key-place 2 lastrow web-post-bl)
+             ; (thumb-tr-place web-post-br)
              (thumb-tr-place thumb-post-br)
              (key-place 2 lastrow web-post-br)
              (key-place 3 lastrow web-post-bl)
@@ -558,20 +590,34 @@
    (for [x (range 4 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl x       cornerrow 0 -1 web-post-br))
    (for [x (range 5 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl (dec x) cornerrow 0 -1 web-post-br))
    ; thumb walls
+   ; (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 web-post-br)
    (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 thumb-post-br)
    (wall-brace thumb-mr-place  0 -1 web-post-br thumb-mr-place  0 -1 web-post-bl)
    (wall-brace thumb-br-place  0 -1 web-post-br thumb-br-place  0 -1 web-post-bl)
    (wall-brace thumb-ml-place -0.3  1 web-post-tr thumb-ml-place  0  1 web-post-tl)
-   (wall-brace thumb-bl-place  0  1 web-post-tr thumb-bl-place  0  1 web-post-tl)
+   (wall-brace thumb-bl-place  0  1 web-post-tr thumb-bl-place  0  0.5 web-post-tl)
+
+
+   ; ; bottom bottom left -> bottom bottom right
+   ; (wall-brace thumb-bl-place  0  -1 web-post-bl thumb-bl-place  0  -1 web-post-br)
+   ; ; corner
+   ; (wall-brace thumb-bl-place -1  0 web-post-bl thumb-bl-place  0  -1 web-post-bl)
+
+   ; ; bottom bottom right -> middle right bottol left
+   ; (wall-brace thumb-bl-place  0  -1 web-post-br thumb-mr-place  0  -1 web-post-bl)
+
+   (wall-brace thumb-bl-place -0.5  0 web-post-bl thumb-bl-place  0  -0.5 web-post-bl)
+
    (wall-brace thumb-br-place -1  0 web-post-tl thumb-br-place -1  0 web-post-bl)
-   (wall-brace thumb-bl-place -1  0 web-post-tl thumb-bl-place -1  0 web-post-bl)
+   (wall-brace thumb-bl-place -0.5  0 web-post-tl thumb-bl-place -0.5  0 web-post-bl)
    ; thumb corners
    (wall-brace thumb-br-place -1  0 web-post-bl thumb-br-place  0 -1 web-post-bl)
-   (wall-brace thumb-bl-place -1  0 web-post-tl thumb-bl-place  0  1 web-post-tl)
+   (wall-brace thumb-bl-place -0.5  0 web-post-tl thumb-bl-place  0  0.5 web-post-tl)
    ; thumb tweeners
    (wall-brace thumb-mr-place  0 -1 web-post-bl thumb-br-place  0 -1 web-post-br)
    (wall-brace thumb-ml-place  0  1 web-post-tl thumb-bl-place  0  1 web-post-tr)
-   (wall-brace thumb-bl-place -1  0 web-post-bl thumb-br-place -1  0 web-post-tl)
+   (wall-brace thumb-bl-place  0  -0.5 web-post-bl thumb-br-place  -0.5  -0.5 web-post-tl)
+   ; (wall-brace thumb-tr-place  0 -1 web-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
    (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
    ; clunky bit on the top left thumb connection  (normal connectors don't work well)
    (bottom-hull
