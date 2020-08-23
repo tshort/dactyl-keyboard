@@ -1,6 +1,9 @@
 *~
 \#*\#
 
+.clj-kondo/
+.lsp/
+
 .repl-*
 .nrepl-*
 
