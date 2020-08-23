@@ -14,12 +14,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 
 (def nrows 4)
-(def ncols 5)
+(def ncols 6)
 
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π 36))                        ; curvature of the rows
 (def centerrow (- nrows 3))             ; controls front-back tilt
-(def centercol 3)                       ; controls left-right tilt / tenting (higher number is more tenting)
+(def centercol 2.5)                       ; controls left-right tilt / tenting (higher number is more tenting)
 (def tenting-angle (/ π 12))            ; or, change this for more precise tenting control
 (def column-style 
   (if (> nrows 5) :orthographic :standard))  ; options include :standard, :orthographic, and :fixed
@@ -32,7 +32,7 @@
 
 (def thumb-offsets [6 -3 7])
 
-(def keyboard-z-offset 9)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
+(def keyboard-z-offset 16)              ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
 
 (def extra-width 2.5)                   ; extra space between the base of keys; original= 2
 (def extra-height 1.0)                  ; original= 0.5
@@ -211,7 +211,6 @@
 (defn key-position [column row position]
   (apply-key-geometry (partial map +) rotate-around-x rotate-around-y column row position))
 
-
 (def key-holes
   (apply union
          (for [column columns
@@ -293,6 +292,7 @@
          thumb-offsets))
 ; (pr thumborigin)
 
+(def thumb-height-adjust 0)
 (defn thumb-tr-place [shape]
   (->> shape
       ;  (rotate (deg2rad  10) [1 0 0])
@@ -302,7 +302,7 @@
        (rotate (deg2rad -23) [0 1 0])
        (rotate (deg2rad  10) [0 0 1])
        (translate thumborigin)
-       (translate [-12 -16 3])
+       (translate [-12 -16 (+ thumb-height-adjust 3)])
        ))
 (defn thumb-tl-place [shape]
   (->> shape
@@ -313,14 +313,14 @@
        (rotate (deg2rad -23) [0 1 0])
        (rotate (deg2rad  10) [0 0 1])
        (translate thumborigin)
-       (translate [-32 -15 -2])))
+       (translate [-32 -15 (+ thumb-height-adjust -2)])))
 (defn thumb-mr-place [shape]
   (->> shape
        (rotate (deg2rad  -6) [1 0 0])
        (rotate (deg2rad -34) [0 1 0])
        (rotate (deg2rad  48) [0 0 1])
        (translate thumborigin)
-       (translate [-29 -40 -13])
+       (translate [-29 -40 (+ thumb-height-adjust -13)])
        ))
 (defn thumb-ml-place [shape]
   (->> shape
@@ -328,14 +328,14 @@
        (rotate (deg2rad -34) [0 1 0])
        (rotate (deg2rad  40) [0 0 1])
        (translate thumborigin)
-       (translate [-51 -25 -12])))
+       (translate [-51 -25 (+ thumb-height-adjust -12)])))
 (defn thumb-br-place [shape]
   (->> shape
        (rotate (deg2rad -16) [1 0 0])
        (rotate (deg2rad -33) [0 1 0])
        (rotate (deg2rad  54) [0 0 1])
        (translate thumborigin)
-       (translate [-37.8 -55.3 -25.3])
+       (translate [-37.8 -55.3 (+ thumb-height-adjust -25.3)])
        ))
 (defn thumb-bl-place [shape]
   (->> shape
@@ -343,7 +343,7 @@
        (rotate (deg2rad -35) [0 1 0])
        (rotate (deg2rad  52) [0 0 1])
        (translate thumborigin)
-       (translate [-56.3 -43.3 -23.5])
+       (translate [-56.3 -43.3 (+ thumb-height-adjust -23.5)])
        ))
 
 (defn thumb-1x-layout [shape]
@@ -351,11 +351,11 @@
    (thumb-mr-place shape)
    (thumb-ml-place shape)
    (thumb-br-place shape)
+   (thumb-tr-place shape)
    (thumb-bl-place shape)))
 
 (defn thumb-15x-layout [shape]
   (union
-   (thumb-tr-place shape)
    (thumb-tl-place shape)))
 
 (def larger-plate
@@ -376,7 +376,8 @@
   (union
    (thumb-1x-layout single-plate)
    (thumb-15x-layout single-plate)
-   (thumb-15x-layout larger-plate)
+   ; (thumb-15x-layout larger-plate)
+   (thumb-15x-layout single-plate)
    ))
 
 (def thumb-post-tr (translate [(- (/ mount-width 2) post-adj)  (- (/ mount-height  1.15) post-adj) 0] web-post))
@@ -384,13 +385,28 @@
 (def thumb-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -1.15) post-adj) 0] web-post))
 (def thumb-post-br (translate [(- (/ mount-width 2) post-adj)  (+ (/ mount-height -1.15) post-adj) 0] web-post))
 
+
 (def thumb-connectors
   (union
       (triangle-hulls    ; top two
              (thumb-tl-place thumb-post-tr)
-             (thumb-tl-place thumb-post-br)
+             (thumb-tl-place web-post-br)
              (thumb-tr-place thumb-post-tl)
-             (thumb-tr-place thumb-post-bl))
+             (thumb-tr-place web-post-bl))
+      (triangle-hulls
+             (thumb-tl-place web-post-tl)
+             (thumb-tl-place thumb-post-tl)
+             (thumb-tl-place thumb-post-tr)
+             (thumb-tl-place web-post-tr)
+             (thumb-tl-place web-post-tl))
+      (triangle-hulls
+             (thumb-tr-place web-post-tl)
+             (thumb-tr-place thumb-post-tl)
+             (thumb-tr-place web-post-tr))
+      (triangle-hulls
+             (thumb-tr-place web-post-bl)
+             (thumb-tr-place web-post-br)
+             (thumb-tr-place thumb-post-br))
       (triangle-hulls    ; bottom two on the right
              (thumb-br-place web-post-tr)
              (thumb-br-place web-post-br)
@@ -399,6 +415,9 @@
       (triangle-hulls    ; bottom two on the left
              (thumb-bl-place web-post-tr)
              (thumb-bl-place web-post-br)
+             (thumb-ml-place web-post-bl))
+      (triangle-hulls
+             (thumb-bl-place web-post-tr)
              (thumb-ml-place web-post-tl)
              (thumb-ml-place web-post-bl))
       (triangle-hulls    ; centers of the bottom four
@@ -413,11 +432,11 @@
       (triangle-hulls    ; top two to the middle two, starting on the left
              (thumb-tl-place thumb-post-tl)
              (thumb-ml-place web-post-tr)
-             (thumb-tl-place thumb-post-bl)
+             (thumb-tl-place web-post-bl)
              (thumb-ml-place web-post-br)
-             (thumb-tl-place thumb-post-br)
+             (thumb-tl-place web-post-br)
              (thumb-mr-place web-post-tr)
-             (thumb-tr-place thumb-post-bl)
+             (thumb-tr-place web-post-bl)
              (thumb-mr-place web-post-br)
              (thumb-tr-place thumb-post-br)) 
       (triangle-hulls    ; top two to the main keyboard, starting on the left
@@ -427,11 +446,10 @@
              (key-place 0 cornerrow web-post-br)
              (thumb-tr-place thumb-post-tl)
              (key-place 1 cornerrow web-post-bl)
-             (thumb-tr-place thumb-post-tr)
+             (thumb-tr-place web-post-tr)
              (key-place 1 cornerrow web-post-br)
-             (key-place 2 lastrow web-post-tl)
              (key-place 2 lastrow web-post-bl)
-             (thumb-tr-place thumb-post-tr)
+             (thumb-tr-place web-post-tr)
              (key-place 2 lastrow web-post-bl)
              (thumb-tr-place thumb-post-br)
              (key-place 2 lastrow web-post-br)
@@ -439,9 +457,14 @@
              (key-place 2 lastrow web-post-tr)
              (key-place 3 lastrow web-post-tl)
              (key-place 3 cornerrow web-post-bl)
+             ; (key-place 2 lastrow web-post-bl)
              (key-place 3 lastrow web-post-tr)
              (key-place 3 cornerrow web-post-br)
              (key-place 4 cornerrow web-post-bl))
+      (triangle-hulls    ; little triangle
+             (key-place 1 cornerrow web-post-br)
+             (key-place 2 lastrow web-post-bl)
+             (key-place 2 lastrow web-post-tl))
       (triangle-hulls 
              (key-place 1 cornerrow web-post-br)
              (key-place 2 lastrow web-post-tl)
@@ -658,9 +681,10 @@
 (defn screw-insert-all-shapes [bottom-radius top-radius height]
   (union (screw-insert 0 0         bottom-radius top-radius height)
          (screw-insert 0 lastrow   bottom-radius top-radius height)
-         (screw-insert 2 (+ lastrow 0.3)  bottom-radius top-radius height)
+         (screw-insert -0.1 4.4 bottom-radius top-radius height)
          (screw-insert 3 0         bottom-radius top-radius height)
-         (screw-insert lastcol 1   bottom-radius top-radius height)
+         (screw-insert (- lastcol 0.15) 2.35   bottom-radius top-radius height)
+         (screw-insert (- lastcol 0.15) -0.35   bottom-radius top-radius height)
          ))
 (def screw-insert-height 3.8)
 (def screw-insert-bottom-radius (/ 5.31 2))
