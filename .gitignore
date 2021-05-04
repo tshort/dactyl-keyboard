@@ -4,6 +4,9 @@
 .repl-*
 .nrepl-*
 
+.clj-kondo/
+.lsp/
+
 .lein-*
 *.gcode
 *.scad
