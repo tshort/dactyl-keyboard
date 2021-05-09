@@ -255,17 +255,31 @@
          (map (partial apply hull)
               (partition 3 1 shapes))))
 
+; Pinky post locations for row 4 and 5
+(def pinky-4-post-tl (translate [(+ (/ mount-width -2) post-adj 1) 20 -6] web-post))
+(def pinky-4-post-tr (translate [ 0 16 -3] web-post))
+(def pinky-5-post-tl (translate [ 0 16 -3] web-post))
+(def pinky-5-post-tr web-post-tr)
+; (def pinky-5-post-tr (translate [(- (/ mount-width 2) post-adj)  15 -5] web-post))
+
 (def connectors
   (apply union
-         (concat
-          ;; Row connections
+         [(concat
+          ;; Row connections - conencting all the keys in a row
           (for [column (range 0 (dec ncols))
                 row (range 0 lastrow)]
+            (cond 
+              (= column 3)
+            (triangle-hulls
+             )
+             :else
             (triangle-hulls
              (key-place (inc column) row web-post-tl)
              (key-place column row web-post-tr)
              (key-place (inc column) row web-post-bl)
-             (key-place column row web-post-br)))
+             (key-place column row web-post-br))
+            )
+          )
 
           ;; Column connections
           (for [column columns
@@ -279,11 +293,39 @@
           ;; Diagonal connections
           (for [column (range 0 (dec ncols))
                 row (range 0 cornerrow)]
+            (cond
+              (= column 3)
+            (triangle-hulls
+             )
+             :else
             (triangle-hulls
              (key-place column row web-post-br)
              (key-place column (inc row) web-post-tr)
              (key-place (inc column) row web-post-bl)
-             (key-place (inc column) (inc row) web-post-tl))))))
+             (key-place (inc column) (inc row) web-post-tl))
+             )
+            )
+
+          )
+          ;; Custom Column 3->4 connections 
+          (triangle-hulls
+             (key-place 3 0 web-post-tr)
+             (key-place 4 0 pinky-4-post-tl)
+             (key-place 3 0 web-post-br)
+             (key-place 4 0 web-post-tl)
+             (key-place 3 1 web-post-tr)
+             (key-place 4 0 web-post-bl)
+             (key-place 3 1 web-post-br)
+             (key-place 4 1 web-post-tl)
+             (key-place 3 2 web-post-tr)
+             (key-place 4 1 web-post-bl)
+             (key-place 3 2 web-post-br)
+             (key-place 4 2 web-post-tl)
+             (key-place 3 3 web-post-tr)
+             (key-place 4 2 web-post-bl)
+          )]
+         )
+  )
 
 ;;;;;;;;;;;;
 ;; Thumbs ;;
@@ -522,28 +564,41 @@
   (wall-brace (partial key-place x1 y1) dx1 dy1 post1 
               (partial key-place x2 y2) dx2 dy2 post2))
 
+
 (defn key-wall-brace2 [x1 y1 dx1 dy1 dz1 post1 x2 y2 dx2 dy2 dz2 post2] 
   (wall-brace2 (partial key-place x1 y1) dx1 dy1 dz1 post1 
               (partial key-place x2 y2) dx2 dy2 dz2 post2))
+
+
 
 (def case-walls
   (union
    ; back wall
    (key-wall-brace 0 0 0 1 web-post-tl 0       0 0 1 web-post-tr)
-   (key-wall-brace 1 0 0 1 web-post-tl 1       0 0 1 web-post-tr)
    (key-wall-brace 1 0 0 1 web-post-tl (dec 1) 0 0 1 web-post-tr)
-   (key-wall-brace2 2 0 0 0.71 5 web-post-tl 2       0 0 0.705 4 web-post-tr)
+   (key-wall-brace 1 0 0 1 web-post-tl 1       0 0 1 web-post-tr)
    (key-wall-brace2 2 0 0 0.71 5 web-post-tl (dec 2) 0 0 1 0 web-post-tr)
-   (key-wall-brace2 3 0 0 1 0 web-post-tl 3       0 0 1 5 web-post-tr)
+   (key-wall-brace2 2 0 0 0.71 5 web-post-tl 2       0 0 0.705 4 web-post-tr)
    (key-wall-brace2 3 0 0 1 0 web-post-tl (dec 3) 0 0 0.705 4 web-post-tr)
+   (key-wall-brace2 3 0 0 1 0 web-post-tl 3       0 0 1 2 web-post-tr)
    ; back wall - smooth pinky transition 
-   (key-wall-brace2 4 0 0 2 -14 web-post-tl 3 0 0 1 5 web-post-tr)
-   (key-wall-brace2 4 0 0 2 -14 web-post-tl 4 0 0 1.66 -8 web-post-tr)
-   (key-wall-brace2 5 0 0 1.60 -6 web-post-tl 4 0 0 1.66 -8 web-post-tr)
-   (key-wall-brace2 5 0 0 1.60 -6 web-post-tl 5 0 0 1 0 web-post-tr)
-   ; (for [x (range 4 ncols)] (key-wall-brace x 0 0 2 web-post-tl x       0 0 2 web-post-tr))
-   ; (for [x (range 5 ncols)] (key-wall-brace x 0 0 2 web-post-tl (dec x) 0 0 2 web-post-tr))
-   (key-wall-brace lastcol 0 0 1 web-post-tr lastcol 0 1 0 web-post-tr)
+   (key-wall-brace2 4 0 0 1 2 pinky-4-post-tl 3 0 0 1 2 web-post-tr)
+   (key-wall-brace2 4 0 0 1 2 pinky-4-post-tl 4 0 0 1 2 pinky-4-post-tr)
+   (key-wall-brace2 5 0 0 1 2 pinky-5-post-tl 4 0 0 1 2 pinky-4-post-tr)
+   (key-wall-brace2 5 0 0 1 2 pinky-5-post-tl 5 0 0 1 2 pinky-5-post-tr)
+   ; pinky web addition 
+   (triangle-hulls
+     (key-place 4 0 pinky-4-post-tl)
+     (key-place 4 0 web-post-tl)
+     (key-place 4 0 pinky-4-post-tr)
+     (key-place 4 0 web-post-tr)
+     (key-place 5 0 pinky-5-post-tl)
+     (key-place 5 0 web-post-tl)
+     (key-place 5 0 pinky-5-post-tr)
+     (key-place 5 0 web-post-tr)
+    )
+   ; back right corner
+   (key-wall-brace2 lastcol 0 0 1 2 pinky-5-post-tr lastcol 0 1 0 0 web-post-tr)
    ; right wall
    (for [y (range 0 lastrow)] (key-wall-brace lastcol y 1 0 web-post-tr lastcol y       1 0 web-post-br))
    (for [y (range 1 lastrow)] (key-wall-brace lastcol (dec y) 1 0 web-post-br lastcol y 1 0 web-post-tr))
@@ -562,7 +617,6 @@
    (wall-brace (partial key-place 0 0) 0 1 web-post-tl (partial left-key-place 0 1) 0 1 web-post)
    (wall-brace (partial left-key-place 0 1) 0 1 web-post (partial left-key-place 0 1) -1 0 web-post)
    ; front wall
-   (key-wall-brace lastcol 0 0 1 web-post-tr lastcol 0 1 0 web-post-tr)
    (key-wall-brace 3 lastrow   0 -1 web-post-bl 3 lastrow 0.5 -1 web-post-br)
    (key-wall-brace 3 lastrow 0.5 -1 web-post-br 4 cornerrow 1 -1 web-post-bl)
    (for [x (range 4 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl x       cornerrow 0 -1 web-post-br))
