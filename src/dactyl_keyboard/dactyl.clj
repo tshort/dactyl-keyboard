@@ -256,7 +256,7 @@
               (partition 3 1 shapes))))
 
 ; Pinky post locations for row 4 and 5
-(def pinky-4-post-tl (translate [(+ (/ mount-width -2) post-adj 1) 20 -6] web-post))
+(def pinky-4-post-tl (translate [(+ (/ mount-width -2) post-adj 0) 18 -7] web-post))
 (def pinky-4-post-tr (translate [ 0 16 -3] web-post))
 (def pinky-5-post-tl (translate [ 0 16 -3] web-post))
 (def pinky-5-post-tr web-post-tr)
